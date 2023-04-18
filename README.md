@@ -33,14 +33,14 @@ The MatrisomeAnalyzeR package provides the following functions:
 2. `matrianalyze`: creates tabulations of *matriannotated* data
 3. Post-run analyses
    * `matribar`: creates bar charts for matriannotated data
-   * `matriflow`: renders alluvial plots for matriannotated data
-   * `matriring`: donut charts for matriannotated data
-   * `matristar`: polar bar charts for matriannotated data
+   * `matriflow`: creates alluvial plots for matriannotated data
+   * `matriring`: creates donut charts for matriannotated data
+   * `matristar`: creates polar bar charts for matriannotated data
 
 ## Workflow
 The workflow (Figure 1A) has 2 steps for users to carry out:
-1. The input table of genes/transcripts/proteins identifiers is processed by `matriannotate` which recognizes identifiers found in organism-specific matrisome lists and extracts their annotations from those lists, such as *Division* and *Categories* (Figure 1B), with which the pipeline can further interact. Users should specify the column with gene/protein/other identifiers and the species (such as: `human`, `mouse`, `zebrafish`, *`C. elegans`*, *`Drosophila`*). Accepted identifiers for all species are Gene Symbols, NCBI gene (formerly Entrez Gene), or Uniprot ID. Additionally, it also accepts Ensembl Gene ID for human and mouse, ZFIN ID for zebrafish, WormBase and Common Gene Name for *C. elegans*, and *FlyBase ID* for *Drosophila*.
-   * (Optional) The annotated list of molecules can then be analyzed by `matrianalyze`, which takes into account the other columns from the input data table, and calculates column-wise sum (if numeric) for each division and category member.
+1. The input table of genes/transcripts/proteins identifiers is processed by `matriannotate` which recognizes identifiers found in organism-specific matrisome lists and extracts their annotations from those lists, such as *Division* and *Categories* (Figure 1B), with which the pipeline can further interact. Users should specify the column with gene/protein/other identifiers and the species (such as: `human`, `mouse`, `zebrafish`, *`C. elegans`*, *`Drosophila`*). Accepted identifiers for all species are Gene Symbols, NCBI gene (formerly Entrez Gene), or Uniprot ID. Additionally, it also accepts Ensembl Gene ID for human and mouse, ZFIN ID for zebrafish, WormBase and Common Gene Name for *C. elegans*, and FlyBase ID for *Drosophila*.
+   * (Optional) The annotated list of molecules can then be analyzed by `matrianalyze`, which takes into account the other columns from the input data table, and calculates column-wise sum (if numeric) for each matrisome division and category member, as well as non-matrisome components.
 2. The results can be visualized in several different ways by the following functions: `matribar`, `matriring`, `matristar`, and `matriflow`. All graphical functions, by default, print the plots to screen. We have included a parameter (`print.plot`) that can be set to FALSE to avoid this behaviour and obtain a ggplot2 object instead, which can be further customized according to user preferences.
 
 **A**
@@ -84,7 +84,7 @@ core & associated -.- division
 
 ## Usage
 ### Example 1: Mass spectrometry data
-Let's analyze some human mass-spectrometry data, available as a comma-separated values table ([mass-spec.csv](./examples/Mass-spec/mass-spec.csv)). If you are downloading the file via your browser, you might need to click the link, then click "raw" (upper right corner) and then right-click and choice "Save as" (or similar). Results can be visualized in 4 ways (Figure 2) by the MatrisomeAnalyzeR functions listed in Figure 1A.  
+Let's analyze some human mass-spectrometry data, available as a comma-separated values table ([mass-spec.csv](./examples/Mass-spec/mass-spec.csv)). If you are downloading the file via your browser, you might need to click the link, then click "raw" (upper right corner) and then right-click and choose "Save as" (or similar). Results can be visualized in 4 ways (Figure 2) by the MatrisomeAnalyzeR functions listed in Figure 1A.  
 Data courtesy of A. Naba, University of Illinois, Chicago.
 ```R
 # download the "mass-spec.csv" file from the "examples/Mass-spec" folder in this repository to your working directory.
@@ -94,7 +94,7 @@ genes <- read.csv("mass-spec.csv", header = TRUE)
 head(genes)
 colnames(genes)
 
-# run the main function for annotation, specifying the gene names column ("Gene.Symbol") and species
+# run the main function for annotation, specifying the gene names column ("Gene.Symbol") and organisms/species
 genes.ann <- matriannotate(data = genes, gene.column = "Gene.Symbol", species = "human")
 
 # analyze the results?
@@ -119,7 +119,7 @@ p + scale_fill_npg()
 > **Figure 2. MatrisomeAnalyzeR visualization options.** The majority of proteins in this test file do not belong to the Matrisome, however those that do mainly belong to the the ECM glycoprotein, collagen, and ECM regulator categories. Exact numbers are explicitly printed in the *matriring* and *matristar* charts.
 
 ### Example 2: Whole Exome Sequencing (WES) (data from [cBioPortal](https://www.cbioportal.org))
-In this example, we use data from whole-exome sequencing of 817 invasive breast carcinoma tumor/normal pairs (The Cancer Genome Atlas - Breast Invasive Carcinoma Project: [TCGA, Cell 2015](https://www.cbioportal.org/study/summary?id=brca_tcga_pub2015); PMID: [26451490](https://pubmed.ncbi.nlm.nih.gov/26451490/)) to evaluate the mutation frequency of matrisome and non-matrisome genes. Data from four types of invasive breast carcinomas are provided as `.txt` files. If downloading the files from your browser, you might need to click on the link, then click "raw" (upper right corner) and then right-click and choice "Save as" (or similar).
+In this example, we use data from whole-exome sequencing of 817 invasive breast carcinoma tumor/normal pairs (The Cancer Genome Atlas - Breast Invasive Carcinoma Project: [TCGA, Cell 2015](https://www.cbioportal.org/study/summary?id=brca_tcga_pub2015); PMID: [26451490](https://pubmed.ncbi.nlm.nih.gov/26451490/)) to evaluate the mutation frequency of matrisome and non-matrisome genes. Data from four types of invasive breast carcinomas are provided as `.txt` files. If downloading the files from your browser, you might need to click on the link, then click "raw" (upper right corner) and then right-click and choose "Save as" (or similar).
 * **IDC**: [Breast Invasive Ductal Carcinoma](./examples/Breast%20Invasive%20Carcinoma%20(TCGA%2C%20Cell%202015)/Breast%20Invasive%20Ductal%20Carcinoma.txt) (490 samples)
 * **ILC**: [Breast Invasive Lobular Carcinoma](./examples/Breast%20Invasive%20Carcinoma%20(TCGA%2C%20Cell%202015)/Breast%20Invasive%20Lobular%20Carcinoma.txt) (127 samples)
 * **Mixed**: [Breast Mixed Ductal and Lobular Carcinoma](./examples/Breast%20Invasive%20Carcinoma%20(TCGA%2C%20Cell%202015)/Breast%20Mixed%20Ductal%20and%20Lobular%20Carcinoma.txt) (88 samples)
